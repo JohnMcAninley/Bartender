@@ -13,6 +13,12 @@
 #define DISPENSE_TIME 10
 #define REFILL_TIME 10
 
+struct ingredient {
+  unsigned int x;
+  unsigned int y;
+  byte count;
+};
+
 boolean busy = true;
 int current_x = 0;
 int current_y = 0;
@@ -42,10 +48,22 @@ void setup() {
 
 void loop() {
   
-  
-  moveTo(x, y);
-  dispense(n);
-  zero();
+  if(Serial.available())
+  {    
+    if(Serial.read() == 'I' && Serial.read() == 0)
+    {
+      byte ingredients = Serial.read();
+      ingredient recipe[ingredients];
+    
+      for(int i = 0; i < ingredients; i++)
+      {    
+        moveTo(recipe[i].x, recipe[i].y);
+        dispense(recipe[i].count);
+      }
+    
+      zero();
+    }
+  }
 }
 
 void moveTo(int x, int y) {
